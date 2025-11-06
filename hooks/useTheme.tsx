@@ -96,8 +96,45 @@ interface ThemeContextType {
 const ThemeContext = createContext<undefined | ThemeContextType>(undefined);
 
 export const ThemeProvider = ({childern} : {childern : ReactNode}) => {
-    
+    const [isDarkMode , setIsDarkMode] = useState(false);
+
+
+    useEffect(() => {
+        AsyncStorage.getItem("darkMode").then((value : any) => {
+           if(value) setIsDarkMode(JSON.parse(value));
+        });
+    } , []);
+
+
+    const toggleDarkMode = async () => {
+       const newMode = !isDarkMode;
+       setIsDarkMode(newMode);
+       await AsyncStorage.setItem("darkMode" , JSON.stringify(newMode));
+    };
+
+
+    const colors = isDarkMode ? darkColors : lightColors;
+
+    return (
+       <ThemeContext.Provider value={{isDarkMode , toggleDarkMode , colors}}>
+         {childern}
+       </ThemeContext.Provider>
+    );
+};
+
+const useTheme = () => {
+   const context = useContext(ThemeContext);
+   if(context === undefined) {
+     throw new Error("useTheme must be used within a ThemeProvider");
+   }
+
+   return context;
 }
+
+export default useTheme;
+
+
+
 
 
 
