@@ -12,13 +12,14 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 export default function RootLayout() {
   return ( 
   <ConvexProvider client={convex}>
-      <ThemeProvider>
-         <Stack screenOptions={{headerShown : false}}>
-             <Stack.Screen name="(tabs)" options={{title : "Home"}} />
-         </Stack>
-      </ThemeProvider>
+      <ThemeProvider childern = {
+          <Stack screenOptions={{headerShown : false}}>
+             <Stack.Screen name="(tabs)"/>
+        </Stack> }/>
   </ConvexProvider>
   );
-}
+};
+
+
 
 
