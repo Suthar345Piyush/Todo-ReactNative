@@ -7,6 +7,9 @@ export default defineSchema({
    todos : defineTable({
      text : v.string(),
      isCompleted : v.boolean(),
+     notificationId : v.optional(v.string()),
+     deadlineHours : v.optional(v.number()),
+     createdAt : v.number(),
    }),
 });
 
