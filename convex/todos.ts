@@ -26,6 +26,7 @@ export const addTodo = mutation({
        notificationId : args.notificationId,
        deadlineHours : args.deadlineHours,
        createdAt : Date.now(),
+
      });
 
      return todoId;
@@ -40,7 +41,7 @@ export const toggleTodo = mutation({
    args : {id : v.id("todos")},
    handler : async(ctx , args) => {
      const todo = await ctx.db.get(args.id)
-     if(!todo) throw new ConvexError("Todo not found")
+     if (!todo) throw new ConvexError("Todo not found")
 
 
      await ctx.db.patch(args.id , {
