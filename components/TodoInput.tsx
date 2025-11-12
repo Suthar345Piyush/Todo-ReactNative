@@ -6,6 +6,8 @@ import { useMutation } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
 import {useState} from "react";
 import { Alert , TextInput , TouchableOpacity , View } from "react-native";
+import { scheduleTodoNotification , hasNotificationPermissions } from "./NotificationManager";
+
 
 
 const TodoInput = () => {
@@ -20,7 +22,44 @@ const TodoInput = () => {
    const handleAddTodo = async () => {
      if(newTodo.trim()){
        try{
-         await addTodo({text : newTodo.trim()});
+       
+        // check if notification permissions are granted 
+
+        const hasPermissions = await hasNotificationPermissions();
+
+        let notificationId : string | null = null;
+
+        // for testing 2/60 => 2 minutes 
+        // for production = 24 hrs
+
+        let deadlineHours = 2/60;
+
+        // schedule notification if permission granted 
+
+        if(hasPermissions) {
+             notificationId = await scheduleTodoNotification(
+             newTodo.trim(),
+             deadlineHours
+          );
+
+
+       if(notificationId) {
+         console.log(`Notification scheduled for "${newTodo.trim()}" in ${deadlineHours} hours`);
+       } else {
+         console.log("Failed to schedule notification");
+       }
+    } else {
+        console.log("Notification permissions not granted");
+    }
+
+       
+    // adding todo and it's notification id (details) to CONVEX backend  
+    
+         await addTodo({
+          text : newTodo.trim(),
+          notificationId : notificationId || undefined,
+          deadlineHours : deadlineHours,
+        });
          setNewTodo("");
        } catch(error){
           console.log("Error adding todo",error);
