@@ -18,10 +18,12 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 export default function RootLayout() {
 
   // setting two reference 1. notificationListener , 2. responseListener , using useRef
+   
+  // EventSubscription is an object which removes event listner from the emitter 
 
-  const notificationListener = useRef<any>();
-  const responseListener = useRef<any>();
+  const notificationListener = useRef<Notifications.EventSubscription | undefined>(undefined);
 
+  const responseListener = useRef<Notifications.EventSubscription | undefined>(undefined);
 
 
   useEffect(() => {
