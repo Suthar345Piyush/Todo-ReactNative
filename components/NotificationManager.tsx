@@ -153,7 +153,7 @@ export async function cancelTodoNotification(
 
 
    try {
-     await Notifications.cancelAllScheduledNotificationsAsync(notificationId);
+     await Notifications.cancelScheduledNotificationAsync(notificationId);
      console.log(`Notification ${notificationId} cancelled`);
    } catch(error) {
      console.error('Error cancelling notification:',error);
