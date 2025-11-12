@@ -64,13 +64,20 @@ export const deleteTodo = mutation({
    handler : async (ctx , args) => {
    
     // taking todo before deletion , so  we can cancel the notification 
+    
     const todo = await ctx.db.get(args.id); 
+     
+    if(!todo) {
+       throw new ConvexError("Todo not found");
+    }
+
      await ctx.db.delete(args.id);
 
      // returning the notification id , so caller can cancel it
      
-     return {notification : todo?.notificationId};
-     
+     return {
+      notificationId : todo?.notificationId || undefined
+    };
    },
 });
 

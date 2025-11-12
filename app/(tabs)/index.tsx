@@ -1,4 +1,4 @@
-import { Alert, FlatList, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, FlatList, StatusBar, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import useTheme from '@/hooks/useTheme';
 import { createHomeStyles } from '@/assets/images/styles/home.styles';
@@ -8,10 +8,11 @@ import Header from '@/components/Header';
 import TodoInput from '@/components/TodoInput';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
-import LoadingSpinner from '@/components/LoadingSpinner';
+import LoadingSpinner from '@/components/LoadingSpinner';  
 import { Doc, Id } from '@/convex/_generated/dataModel';
 import { Ionicons } from '@expo/vector-icons';
 import EmptyState from '@/components/EmptyState';
+import { cancelTodoNotification } from '@/components/NotificationManager';
 
 
 
@@ -41,23 +42,66 @@ export default function Index()  {
 
 const handleToggleTodo = async (id : Id<"todos">) => {
    try {
-     await toggleTodo({id});
+   
+    // getting the todo before toggling to check notification Id 
+
+    const todo = todos?.find(t => t._id === id);
+
+    // toggle the todo 
+
+    const updatedTodo = await toggleTodo({id});
+
+    //if todo is complete then cancel the notification 
+
+    if(updatedTodo && updatedTodo.isCompleted && todo?.notificationId) {
+        await cancelTodoNotification(todo.notificationId);
+        console.log(`Notification cancelled for completed todo: "${todo.text}"`);
+    }
+
    } catch (error) {
      console.log("Error toggling todo" , error);
      Alert.alert("Error" , "Failed to toggle todo");
    }
 };
 
+
+
 const handleDeleteTodo = async (id : Id<"todos">) => {
-   Alert.alert("Delete Todo" , "Are you sure you want to delete this todo?" , [
-     {
+   
+  // get the todo before deleting to get notification id
+
+  const todo = todos?.find(t => t._id === id);
+
+  Alert.alert("Delete Todo" , "Are you sure you want to delete this todo?" , [
+    {
       text : "Cancel" , style : "cancel"
-     },
-     {
-      text : "Delete" , style : "destructive" , onPress : () => deleteTodo({id})
-     },
-   ]);
+    },
+    {
+      text : "Delete", 
+      style : "destructive", 
+      onPress : async () => {
+        try {
+
+          // Delete the todo from Convex
+
+          const result = await deleteTodo({id});
+          
+          // Cancel the notification if it exists
+
+          if (result?.notificationId) {
+            await cancelTodoNotification(result.notificationId);
+            console.log(`Notification cancelled for deleted todo: "${todo?.text}"`);
+          }
+        } catch (error) {
+          console.log("Error deleting todo", error);
+          Alert.alert("Error", "Failed to delete todo");
+        }
+      }
+    },
+  ]);
 };
+
+
 
 
 const handleEditTodo = (todo : Todo) => {
@@ -77,6 +121,7 @@ const handleSaveEdit = async () => {
      }
    }
 };
+
 
 
 const handleCancelEdit = () => {
