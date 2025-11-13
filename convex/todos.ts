@@ -55,9 +55,7 @@ export const toggleTodo = mutation({
 });
 
 
-
 //for deleting the todo 
-
 
 export const deleteTodo = mutation({
    args : {id : v.id("todos")},
