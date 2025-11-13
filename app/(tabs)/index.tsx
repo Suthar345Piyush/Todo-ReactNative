@@ -101,8 +101,6 @@ const handleDeleteTodo = async (id : Id<"todos">) => {
 };
 
 
-
-
 const handleEditTodo = (todo : Todo) => {
    setEditText(todo.text);
    setEditingId(todo._id);
