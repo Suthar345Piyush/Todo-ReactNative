@@ -18,7 +18,6 @@ import { cancelTodoNotification } from '@/components/NotificationManager';
 
 type Todo = Doc<"todos">
 
-
 export default function Index()  {
 
   const [editingId , setEditingId] = useState<Id<"todos"> | null>(null);
