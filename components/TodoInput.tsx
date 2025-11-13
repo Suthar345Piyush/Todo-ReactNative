@@ -32,19 +32,22 @@ const TodoInput = () => {
         // for testing 2/60 => 2 minutes 
         // for production = 24 hrs
 
-        let deadlineHours = 2/60;
+        // let deadlineHours = 2/60;
+
+        const delayInSeconds = 120;
+
 
         // schedule notification if permission granted 
 
         if(hasPermissions) {
              notificationId = await scheduleTodoNotification(
              newTodo.trim(),
-             deadlineHours
+             delayInSeconds
           );
 
 
        if(notificationId) {
-         console.log(`Notification scheduled for "${newTodo.trim()}" in ${deadlineHours} hours`);
+         console.log(`Notification scheduled for "${newTodo.trim()}" in ${delayInSeconds} seconds (${delayInSeconds/60} minutes)`);
        } else {
          console.log("Failed to schedule notification");
        }
@@ -58,7 +61,7 @@ const TodoInput = () => {
          await addTodo({
           text : newTodo.trim(),
           notificationId : notificationId || undefined,
-          deadlineHours : deadlineHours,
+          deadlineHours : delayInSeconds / 3600,
         });
          setNewTodo("");
        } catch(error){

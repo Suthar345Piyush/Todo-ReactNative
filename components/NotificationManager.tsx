@@ -83,7 +83,7 @@ export async function requestNotificationPermission() : Promise<boolean>  {
 export async function scheduleTodoNotification (
 
    todoText : string,
-   deadlineHours : number = 24
+   delayInSeconds : number
 
 ) :  Promise<string | null> {
    
@@ -104,9 +104,25 @@ export async function scheduleTodoNotification (
 
         //setting for testing purpose (2 minutes), later go for production trigger 
 
-        const triggerTime = new Date(Date.now()  + 2 * 60 * 1000);
+        // debugging the notification deadline timing  
 
-        
+        const delayInMilliseconds = delayInSeconds * 1000;
+
+        const triggerTime = new Date(Date.now() + delayInMilliseconds);
+
+        // some logs for debugging  
+
+        console.log('---------------------------');
+        console.log('Scheduling Notification');
+        console.log('---------------------------');
+        console.log(`Current time: ${new Date().toLocaleString()}`);
+        console.log(`Trigger time: ${triggerTime.toLocaleString()}`);
+        console.log(`Delay input: ${delayInSeconds} seconds`);
+        console.log(`Delay calculated: ${delayInMilliseconds} milliseconds`);
+        console.log(`That's ${delayInSeconds / 60} minutes from now`);
+        console.log('---------------------------');
+
+       
         const notificationId = await Notifications.scheduleNotificationAsync({
             content : {
                title : '⏰ Todo Reminder',
@@ -117,13 +133,14 @@ export async function scheduleTodoNotification (
             },
 
             trigger : {
+               type : Notifications.SchedulableTriggerInputTypes.DATE,
                date : triggerTime,
                channelId : Platform.OS === 'android' ? 'todo-reminders' : undefined,
             } as Notifications.DateTriggerInput,
         });
 
 
-        console.log(`Notification scheduled with ID: ${notificationId} for ${triggerTime}`);
+        console.log(`Notification scheduled with ID: ${notificationId}`);
         return notificationId;
 
 
