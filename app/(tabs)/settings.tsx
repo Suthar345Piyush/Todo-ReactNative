@@ -2,11 +2,12 @@ import { createSettingsStyles } from '@/assets/images/styles/settings.styles';
 import DangerZone from '@/components/DangerZone';
 import Preferences from '@/components/Preferences';
 import ProgressStats from '@/components/ProgressStats';
+import SocialLinks from '@/components/SocialAccounts';
 import useTheme from '@/hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SettingsScreen = () => {
@@ -39,6 +40,10 @@ const SettingsScreen = () => {
                <ProgressStats />
                <Preferences />
                <DangerZone />
+               <SocialLinks 
+               githubUrl={'https://github.com/Suthar345Piyush/Todo-ReactNative'} 
+               twitterUrl={'https://x.com/eigenpiyush'} />
+               
            </ScrollView>
        </SafeAreaView>
      </LinearGradient>
