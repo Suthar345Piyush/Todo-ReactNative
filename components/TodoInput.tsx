@@ -34,7 +34,7 @@ const TodoInput = () => {
 
         // let deadlineHours = 2/60;
 
-        const delayInSeconds = 120;
+        const delayInSeconds = 54000;
 
 
         // schedule notification if permission granted 
