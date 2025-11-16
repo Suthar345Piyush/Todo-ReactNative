@@ -38,6 +38,50 @@ export default function Index()  {
 
   if(isLoading) return <LoadingSpinner />
 
+   // formating the timestamp to readable date 
+
+   const formatTimestamp = (timestamp : number) => {
+      const date = new Date(timestamp);
+       const now = new Date();
+
+       const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / 60000 );
+
+        // if the time less than 1 hour , then show "X minutes ago"
+
+        if(diffInMinutes < 60) {
+           if(diffInMinutes < 1) return 'Just now';
+           return `${diffInMinutes} min${diffInMinutes > 1 ? 's' : ''} ago`;
+        }
+
+        // if the time less than 24 hour , then show "X hours ago"
+
+        // for that we have to calculate hours difference 
+
+        const diffInHours = Math.floor(diffInMinutes / 60);
+
+        if(diffInHours < 24) {
+           return `${diffInHours} min${diffInHours > 1 ? 's' : ''} ago`;
+        }
+
+
+        // if  both of them not worked , then show the full date with day 
+
+        const days = ['Sun' , 'Mon' , 'Tue' , 'Wed' , 'Thu' , 'Fri' , 'Sat'];
+
+        const months = ['Jan' , 'Feb' , 'Mar' , 'Apr' , 'May' , 'Jun' , 'Jul' , 'Aug' , 'Sep' , 'Oct' , 'Nov' , 'Dec'];
+
+        const day = days[date.getDay()];
+        const month = months[date.getMonth()];
+        const dateNum = date.getDate();
+        const year = date.getFullYear();
+        const hours = date.getHours().toString().padStart(2 , '0');
+        const minutes = date.getMinutes().toString().padStart(2 , '0');
+
+
+      return `${day} , ${month} ${dateNum} , ${year} at ${hours}:${minutes}`;
+
+   };
+
 
 const handleToggleTodo = async (id : Id<"todos">) => {
    try {
@@ -191,6 +235,21 @@ const renderTodoItem = ({item} : {item:Todo}) => {
                       ]}>
                          {item.text}
                       </Text>
+
+
+                      {/* timestamp design set between text and buttons  */}
+
+                      <View style={{flexDirection : 'row' , alignItems : 'center' , marginTop : 4 , marginBottom : 8}}>
+
+                        <Ionicons name="time-outline" size={10} color={colors.textMuted} style={{marginRight : 3 , opacity : 0.6}}/>
+
+                        <Text style={{fontSize : 10 , color : colors.textMuted , opacity : 0.6 , letterSpacing : 0.2}}>
+                         
+                         {item.createdAt ? formatTimestamp(item.createdAt): 'Unknown'}
+
+                        </Text>
+
+                      </View>
 
 
                       <View style={homeStyles.todoActions}>
