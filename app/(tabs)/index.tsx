@@ -12,7 +12,10 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 import { Doc, Id } from '@/convex/_generated/dataModel';
 import { Ionicons } from '@expo/vector-icons';
 import EmptyState from '@/components/EmptyState';
-import { cancelTodoNotification } from '@/components/NotificationManager';
+import { cancelTodoNotification , scheduleTodoNotification , hasNotificationPermissions } from '@/components/NotificationManager';
+import CustomTimePicker from '@/components/CustomTimePicker';
+
+
 
 
 
@@ -21,8 +24,10 @@ type Todo = Doc<"todos">
 export default function Index()  {
 
   const [editingId , setEditingId] = useState<Id<"todos"> | null>(null);
-
   const [editText , setEditText]  = useState("");
+  const [timePickerVisible , setTimePickerVisible] = useState(false);
+  const [selectedTodo , setSelectedTodo] = useState<Todo | null>(null);
+
 
   const todos = useQuery(api.todos.getTodos);
   const toggleTodo = useMutation(api.todos.toggleTodo);
@@ -164,10 +169,87 @@ const handleSaveEdit = async () => {
 };
 
 
-
 const handleCancelEdit = () => {
    setEditingId(null);
    setEditText("");
+};
+
+
+// function for time picker  
+
+const handleOpenTimePicker = (todo : Todo) => {
+    setSelectedTodo(todo);
+    setTimePickerVisible(true);
+};
+
+
+// function to handle the custom time  
+
+const handleSetCustomTime =  async (delayInSeconds : number) => {
+     if(!selectedTodo) return;
+
+     try{
+        const hasPermissions = await hasNotificationPermissions();
+
+
+        if(!hasPermissions) {
+           Alert.alert('Permission Required' , 'Please enable notification to set custom deadline');
+           return;
+        }
+
+        // cancelling the old notification if exists 
+
+        if(selectedTodo.notificationId) {
+           await cancelTodoNotification(selectedTodo.notificationId);
+        }
+
+        // then scheduling a new notification with custom time  
+
+        const newNotificationId = await scheduleTodoNotification(
+           selectedTodo.text,
+           delayInSeconds,
+        );
+
+
+        if(!newNotificationId){
+           Alert.alert('Error' , 'Failed to schedule notification');
+           return;
+        }
+
+
+        // updating todo in database with new notification id and deadline  
+
+        await updateTodo({
+          id : selectedTodo._id,
+          text : selectedTodo.text,
+          notificationId : newNotificationId,
+          deadlineHours : delayInSeconds / 3600,
+        });
+
+        console.log(`Custom deadline set: ${delayInSeconds / 3600} hours for "${selectedTodo.text}"`);
+
+        Alert.alert('Success' , `Notification rescheduled for ${formatDeadlineTime(delayInSeconds)}`);
+
+     } catch(error) {
+        console.error('Error setting custom time:', error);
+        Alert.alert('Error' , 'Failed to set custom deadline');
+     }
+};
+
+// function for formatting the deadline time  
+
+const formatDeadlineTime  = (seconds : number) => {
+     const hours = Math.floor(seconds / 3600);
+     const days = Math.floor(hours / 24);
+
+
+     if(days > 0) return `${days} day${days > 1 ? 's' : ''}`;
+
+     if(hours > 0)  return `${hours} hour${hours > 1 ? 's' : ''}`;
+
+     const minutes = Math.floor(seconds / 60);
+
+     return `${minutes} minute${minutes > 1 ? 's' : ''}`;
 };
 
 
@@ -248,11 +330,19 @@ const renderTodoItem = ({item} : {item:Todo}) => {
                          {item.createdAt ? formatTimestamp(item.createdAt): 'Unknown'}
 
                         </Text>
-
                       </View>
 
 
+                    
+  
                       <View style={homeStyles.todoActions}>
+
+                        <TouchableOpacity onPress={() => handleOpenTimePicker(item)} activeOpacity={0.8}>
+                          <LinearGradient colors={colors.gradients.primary} style={homeStyles.actionButton}>
+                            <Ionicons name='timer-outline' size={14} color="#fff"/>
+                          </LinearGradient>
+                        </TouchableOpacity>
+
                         <TouchableOpacity onPress={() => handleEditTodo(item)} activeOpacity={0.8}>
                           <LinearGradient colors={colors.gradients.warning} style={homeStyles.actionButton}>
                             <Ionicons name="pencil" size={14} color="#fff"/>
@@ -277,10 +367,9 @@ const renderTodoItem = ({item} : {item:Todo}) => {
     <LinearGradient colors={colors.gradients.background} style={homeStyles.container}>
       <StatusBar barStyle={colors.statusBarStyle}/>
       <SafeAreaView style={homeStyles.safeArea}>
+
         <Header />
-
         <TodoInput />
-
           <FlatList 
              data={todos}
              renderItem={renderTodoItem}
@@ -290,6 +379,15 @@ const renderTodoItem = ({item} : {item:Todo}) => {
              ListEmptyComponent={<EmptyState />}
             />
       </SafeAreaView>
+
+      {/* custom time picker modal  */}
+
+      <CustomTimePicker visible={timePickerVisible} 
+          onClose={() => setTimePickerVisible(false)}
+          onSelectTime={handleSetCustomTime}
+          currentDeadline={selectedTodo?.deadlineHours ? selectedTodo.deadlineHours * 3600 : undefined}
+          />
+
    </LinearGradient>
   );
 }
