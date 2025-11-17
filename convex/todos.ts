@@ -25,8 +25,7 @@ export const addTodo = mutation({
        isCompleted : false,
        notificationId : args.notificationId,
        deadlineHours : args.deadlineHours,
-       createdAt : Date.now(),
-
+       createdAt : Date.now(),                    // tracking when todo is created
      });
 
      return todoId;
@@ -86,11 +85,26 @@ export const updateTodo = mutation({
    args : {
      id : v.id("todos"),
      text : v.string(),
+     notificationId : v.optional(v.string()),
+     deadlineHours : v.optional(v.number()),
    },
    handler : async (ctx , args) => {
-     await ctx.db.patch(args.id , {
-       text : args.text,
-     });
+        const updateData : any = {
+           text : args.text,
+        };
+
+        // update the notification info if provided 
+
+        if(args.notificationId !== undefined) {
+            updateData.notificationId = args.notificationId;
+        }
+
+        if(args.deadlineHours !== undefined) {
+           updateData.deadlineHours = args.deadlineHours;
+        }
+
+
+        await ctx.db.patch(args.id , updateData);
    },
 });
 
@@ -112,7 +126,7 @@ export const clearAllTodos = mutation({
      }
      return {
       deletedCount : todos.length,
-      notificationIds : notificationIds
+      notificationIds : notificationIds   // return the id's to cancel notifications  
       };
    }
 });
