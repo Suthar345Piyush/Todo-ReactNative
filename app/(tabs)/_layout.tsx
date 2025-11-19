@@ -25,7 +25,11 @@ const TabsLayout = () => {
            },
            headerShown : false,
       }}>
-          <Tabs.Screen 
+
+
+{/* index tab */}
+          
+<Tabs.Screen 
              name='index'
               options={{
                  title:"Todos",
@@ -34,6 +38,8 @@ const TabsLayout = () => {
                  )
               }}/>
 
+
+{/* settings tab  */}
 
 
 <Tabs.Screen 
@@ -45,8 +51,21 @@ const TabsLayout = () => {
                  )
               }}/>
 
-              
+
+{/* profile tab  */}
+
+<Tabs.Screen 
+           name='profile'
+           options={{
+             title : 'Profile',
+             tabBarIcon : ({color , size}) => <Ionicons  name='person' size={size}/>
+           }}
+      />
+      
       </Tabs>
+
+
+
   )
 }
 
