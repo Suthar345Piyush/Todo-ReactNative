@@ -69,10 +69,22 @@ export default function Profile() {
 
 
     return (
-       
+       <LinearGradient colors={colors.gradients.background} style={styles.container}>
+          <StatusBar />
+           <SafeAreaView>
+
+           </SafeAreaView>
+       </LinearGradient>
     )
 
 
 
 
 }
+
+
+const styles = StyleSheet.create({
+    container : {
+       
+    }
+})
