@@ -115,5 +115,5 @@ export const UseProfile = () => {
      };
 }
 
-export default UserProfile;
+export default UseProfile;
 
