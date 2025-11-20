@@ -35,7 +35,7 @@ export default function Index()  {
   const updateTodo = useMutation(api.todos.updateTodo);
 
 
-  const {toggleDarkMode , colors} = useTheme();
+  const { colors} = useTheme();
 
   const homeStyles = createHomeStyles(colors);
 

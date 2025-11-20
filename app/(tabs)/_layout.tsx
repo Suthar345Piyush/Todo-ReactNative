@@ -2,7 +2,7 @@ import useTheme from "@/hooks/useTheme";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { StyleSheet } from 'react-native';
+
 
 const TabsLayout = () => {
   const {colors} = useTheme();
@@ -70,5 +70,3 @@ const TabsLayout = () => {
 }
 
 export default TabsLayout;
-
-const styles = StyleSheet.create({})

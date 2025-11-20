@@ -1,6 +1,6 @@
 // Custom Time picker component 
 
-import React , {useState} from "react";
+import React  from "react";
 import { Modal , View , Text , TouchableOpacity , StyleSheet , ScrollView} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
