@@ -1,7 +1,6 @@
 import React from 'react';
 import { View , Text , TouchableOpacity , StyleSheet , ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import useTheme from '@/hooks/useTheme';
 
 
