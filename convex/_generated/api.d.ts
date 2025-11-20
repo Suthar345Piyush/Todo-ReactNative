@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as todoHistory from "../todoHistory.js";
 import type * as todos from "../todos.js";
 
 import type {
@@ -25,6 +26,7 @@ import type {
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  todoHistory: typeof todoHistory;
   todos: typeof todos;
 }>;
 declare const fullApiWithMounts: typeof fullApi;
