@@ -39,7 +39,7 @@ const CustomTimePicker : React.FC<CustomTimePickerProps> = ({
           {label : '8 Hours' , seconds : 28800 , icon : 'moon-outline'},
           {label : '12 Hours' , seconds : 43200 , icon : 'sunny-outline'},
           {label : '15 Hours (Default)' , seconds : 54000  , icon : 'notifications-outline'},
-          {label : '24 Hours' , seconds : 86400 , icon : 'calender-outline'},
+          {label : '24 Hours' , seconds : 86400 , icon : 'calender-clear-outline'},
           {label : '2 Days' , seconds : 172800 , icon : 'calender-number-outline'},
           {label : '3 Days' , seconds : 259200 , icon : 'calendar-sharp'},
        ];
