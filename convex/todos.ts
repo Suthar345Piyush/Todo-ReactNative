@@ -28,30 +28,49 @@ export const addTodo = mutation({
        createdAt : Date.now(),                    // tracking when todo is created
      });
 
+
+     //adding history entry for creation 
+     
+     await ctx.db.insert("todoHistory" , {
+       todoText : args.text,
+       action : "created",
+       timestamp : Date.now(),
+       todoId : todoId,
+     });
+
      return todoId;
    },
 });
 
 
-//for toggle the todo 
-
+// for toggle the todo 
 
 export const toggleTodo = mutation({
-   args : {id : v.id("todos")},
-   handler : async(ctx , args) => {
-     const todo = await ctx.db.get(args.id)
-     if (!todo) throw new ConvexError("Todo not found")
+     args : {id : v.id("todos")},
+
+     handler : async (ctx , args) => {
+        const todo = await ctx.db.get(args.id);
+
+        if(!todo) throw new ConvexError('Todo not found');
 
 
-     await ctx.db.patch(args.id , {
-       isCompleted : !todo.isCompleted
-     })
+        await ctx.db.patch(args.id , {
+          isCompleted : !todo.isCompleted
+        });
 
-     // return the updated todo , we can cancel the notification , if it's completed 
-     const updatedTodo =  await ctx.db.get(args.id);
-      return updatedTodo;
-   }
+        // returning the updated todo so we can cancel notification if completed 
+
+        const updatedTodo = await ctx.db.get(args.id);
+        return updatedTodo;
+     },
 });
+
+
+
+
+
+
+
 
 
 //for deleting the todo 
@@ -82,12 +101,15 @@ export const deleteTodo = mutation({
 //editing the todo (update)
 
 export const updateTodo = mutation({
+   
    args : {
      id : v.id("todos"),
      text : v.string(),
      notificationId : v.optional(v.string()),
      deadlineHours : v.optional(v.number()),
    },
+
+
    handler : async (ctx , args) => {
         const updateData : any = {
            text : args.text,
