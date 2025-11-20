@@ -11,6 +11,19 @@ export default defineSchema({
      deadlineHours : v.optional(v.number()),
      createdAt : v.number(),
    }),
+   
+   /* 
+     todo history schema   
+   */
+
+     todoHistory : defineTable({
+       todoText : v.string(),
+       action : v.string(),       // "created" , "delete" , "completed"
+       timestamp : v.number(),
+       todoId : v.optional(v.string()),   // to track with original todo  
+       additionalInfo : v.optional(v.string()),
+     }).index("by_timestamp" , ["timestamp"]),
+
 });
 
 
