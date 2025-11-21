@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import useTheme from "@/hooks/useTheme";
 import UseProfile from "@/hooks/useProfile";
 import AvatarSelector from "@/components/AvatarSelector";
+import TodoHistoryModal from "@/components/TodoHistoryModal";
 
 
 
@@ -20,7 +21,7 @@ export default function Profile() {
     const [avatarIcon , setAvatarIcon] = useState(profile.avatarIcon);
     const [avatarColor , setAvatarColor] = useState(profile.avatarColor);
     const [isEditing , setIsEditing] = useState(!hasProfile);
-
+    const [historyModalVisible , setHistoryModalVisible] = useState(false);
 
 
 
@@ -238,12 +239,37 @@ export default function Profile() {
                                     <Text style={[styles.infoText , {color : colors.text}]}>Your privacy is protected</Text>
                                  </View>
                             </LinearGradient>
+
+
+                            {/* view history button  */}
+
+                            <TouchableOpacity activeOpacity={0.8}
+                              onPress={() => setHistoryModalVisible(true)}
+                               style={styles.historyButtonWrapper}>
+
+                               <LinearGradient  colors={colors.gradients.primary}
+                                 style={styles.historyButton}
+                                   start={{x : 0 , y : 0}}
+                                     end={{x : 1 , y : 0}}>
+
+                                <Ionicons name="time-outline" size={22} color="#fff"/>
+                                <Text style={styles.historyButtonText}>View Todo History</Text> 
+                                <Ionicons name="chevron-forward" size={20} color="#fff"/>
+                               </LinearGradient>
+                            </TouchableOpacity>
                           </View>
                         </>
                   )}
                </ScrollView>
             </KeyboardAvoidingView>
            </SafeAreaView>
+
+           {/* todo history modal  */}
+
+     <TodoHistoryModal 
+       visible={historyModalVisible}
+         onClose={() => setHistoryModalVisible(false)}/>
+
        </LinearGradient>
     );
 }
@@ -411,4 +437,30 @@ const styles = StyleSheet.create({
      fontSize: 14,
      flex: 1,
    },
- });
+
+   historyButtonWrapper : {
+     marginTop : 8,
+   },
+
+   historyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 12,
+    gap: 10,
+    shadowColor: '#6366f1',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  historyButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+    letterSpacing: 0.3,
+  },
+});
+
+
