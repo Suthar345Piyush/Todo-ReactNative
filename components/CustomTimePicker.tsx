@@ -78,7 +78,7 @@ const CustomTimePicker : React.FC<CustomTimePickerProps> = ({
                 > 
 
                 <View style={styles.modalOverlay}>
-                   <View style={[styles.modalContainer , {backgroundColor : colors.gradients.background}]}>
+                   <View style={[styles.modalContainer , {backgroundColor : '#fff'}]}>
 
 
                       {/* header  */}

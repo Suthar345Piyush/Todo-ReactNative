@@ -19,7 +19,7 @@ const defaultProfile : UserProfile = {
 };
 
 
-export const UseProfile = () => {
+export const useProfile = () => {
      const [profile , setProfile] = useState<UserProfile>(defaultProfile);
 
      const [isLoading , setIsLoading] = useState(true);
@@ -115,5 +115,5 @@ export const UseProfile = () => {
      };
 }
 
-export default UseProfile;
+export default useProfile;
 
