@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import useTheme from "@/hooks/useTheme";
-import UseProfile from "@/hooks/useProfile";
+import useProfile from "@/hooks/useProfile";
 import AvatarSelector from "@/components/AvatarSelector";
 import TodoHistoryModal from "@/components/TodoHistoryModal";
 
@@ -12,9 +12,11 @@ import TodoHistoryModal from "@/components/TodoHistoryModal";
 
 
 export default function Profile() {
+   
+    // all the hooks before any conditional statement  
 
     const {colors} = useTheme();
-    const {profile , saveProfile , updateProfile , getInitials , hasProfile} = UseProfile();
+    const {profile , saveProfile , updateProfile , getInitials , hasProfile} = useProfile();
 
     const [name , setName] = useState(profile.name);
     const [description , setDescription] = useState(profile.description || '');

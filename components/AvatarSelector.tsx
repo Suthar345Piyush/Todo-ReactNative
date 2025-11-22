@@ -83,7 +83,7 @@ const AvatarSelector : React.FC<AvatarSelectorProps> = ({
 
                       <View style={[
                         styles.iconWrapper, {
-                           backgroundColor : selectedIcon === icon ? selectedColor : colors.cardBackground,
+                           backgroundColor : selectedIcon === icon ? selectedColor : "#fff",
                            borderColor : selectedIcon === icon ? selectedColor : colors.border,
                         },
                       ]}>

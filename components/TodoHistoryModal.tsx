@@ -141,9 +141,7 @@ const TodoHistoryModal : React.FC<TodoHistoryModalProps> = ({visible , onClose})
     return (
          <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
             <View style={styles.modalOverlay}>
-               <LinearGradient colors={Array.isArray(colors.backgrounds) ? colors.backgrounds : [colors.backgrounds , colors.backgrounds]}
-                style={styles.modalContainer}
-               >         
+                <View style={[styles.modalContainer , {backgroundColor :  '#1a1a1a'}]}>  
 
                {/* header  */}
 
@@ -292,7 +290,7 @@ const TodoHistoryModal : React.FC<TodoHistoryModalProps> = ({visible , onClose})
                       </TouchableOpacity>
                    )}
 
-               </LinearGradient>
+                </View>  
             </View>
 
          </Modal>
