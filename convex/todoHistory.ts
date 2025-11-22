@@ -59,8 +59,6 @@ export const getHistoryForTodo = query({
 });
 
 
-
-
 // getting history stats 
 
 export const getHistoryStats = query({
@@ -106,7 +104,6 @@ export const clearHistory = mutation({
                 };
      },
 });
-
 
 
 
