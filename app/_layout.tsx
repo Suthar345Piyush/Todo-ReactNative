@@ -5,6 +5,26 @@ import { useEffect , useRef } from "react";
 import * as Notifications from "expo-notifications";
 
 import { requestNotificationPermission , addNotificationResponseListner } from "@/components/NotificationManager";
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://1f22b2c0bcf4e35fafb8185abeb1c513@o4510413585842176.ingest.de.sentry.io/4510413588922448',
+
+  // Adds more context data to events (IP address, cookies, user, etc.)
+  // For more information, visit: https://docs.sentry.io/platforms/react-native/data-management/data-collected/
+  sendDefaultPii: true,
+
+  // Enable Logs
+  enableLogs: true,
+
+  // Configure Session Replay
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1,
+  integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
+
+  // uncomment the line below to enable Spotlight (https://spotlightjs.com)
+  // spotlight: __DEV__,
+});
 
 
 
@@ -15,7 +35,7 @@ const convex = new ConvexReactClient(process.env.EXPO_PUBLIC_CONVEX_URL!, {
 
 
 
-export default function RootLayout() {
+export default Sentry.wrap(function RootLayout() {
 
   // setting two reference 1. notificationListener , 2. responseListener , using useRef
    
@@ -91,8 +111,4 @@ export default function RootLayout() {
         </Stack> }/>
   </ConvexProvider>
   );
-};
-
-
-
-
+});;
