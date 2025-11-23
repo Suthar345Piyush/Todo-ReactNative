@@ -6,6 +6,7 @@ import * as Notifications from "expo-notifications";
 
 import { requestNotificationPermission , addNotificationResponseListner } from "@/components/NotificationManager";
 import * as Sentry from '@sentry/react-native';
+import { initSentry } from "@/utils/sentry";
 
 Sentry.init({
   dsn: 'https://1f22b2c0bcf4e35fafb8185abeb1c513@o4510413585842176.ingest.de.sentry.io/4510413588922448',
@@ -23,8 +24,14 @@ Sentry.init({
   integrations: [Sentry.mobileReplayIntegration(), Sentry.feedbackIntegration()],
 
   // uncomment the line below to enable Spotlight (https://spotlightjs.com)
-  // spotlight: __DEV__,
+  spotlight: __DEV__,
 });
+
+
+
+//initializing sentry before any other code 
+
+initSentry();
 
 
 
