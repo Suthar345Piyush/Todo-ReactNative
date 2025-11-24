@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import useTheme from "@/hooks/useTheme";
 import * as Sentry from "@sentry/react-native";
+import { SendFeedbackParams } from "@sentry/react-native";
 
 
 
@@ -66,15 +67,23 @@ const FeedbackModal : React.FC<FeedbackModalProps> = ({ visible , onClose }) => 
           );
 
 
+          // sentry's native feedback api to get user feedback using SendFeedbackParams method 
 
-          //using sentry's official user feedback api 
-       
-          Sentry.captureFeedback({
-            eventId : eventId,
+
+          const userFeedback :  SendFeedbackParams = {
+            associatedEventId : eventId,
             name : name || 'Anonymous',
             email : email || 'no-reply@example.com',
-            comments : `[${feedbackType.toUpperCase()}]${subject ? `${subject}\n\n` : '\n\n'}${description}`,
-          });
+            message : `[${feedbackType.toUpperCase()}]${subject ? `${subject}\n\n` : '\n\n'}${description}`,
+          }
+
+
+          // sending to sentry using captureFeedback method  
+
+          Sentry.captureFeedback(userFeedback);
+
+
+          //using sentry's official user feedback api 
 
 
           console.log("Feedback sent with event Id:", eventId);
