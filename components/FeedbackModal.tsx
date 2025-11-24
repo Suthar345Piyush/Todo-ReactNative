@@ -55,35 +55,26 @@ const FeedbackModal : React.FC<FeedbackModalProps> = ({ visible , onClose }) => 
           
           const eventId = Sentry.captureMessage(
 
-             `${feedbackType.toUpperCase()}: ${subject || 'No Subject'}`,
+             `${feedbackType.toUpperCase()}: ${subject || 'User Feedback'}`,
 
              {
               level : feedbackType === "bug" ? 'error' : 'info',
               tags : {
                  feedback_type : feedbackType,
               },
-
-              contexts : {
-                 feedback : {
-                    type : feedbackType,
-                    subject : subject,
-                    description : description,
-                    name : name || 'Anonymous',
-                    email : email || 'No email provided',
-                 },
-              },
              },
           );
 
 
-          //setting user context 
 
-          if(name || email) {
-             Sentry.setUser({
-                username : name || 'Anonymous',
-                email : email || undefined,
-             });
-          }
+          //using sentry's official user feedback api 
+       
+          Sentry.captureFeedback({
+            eventId : eventId,
+            name : name || 'Anonymous',
+            email : email || 'no-reply@example.com',
+            comments : `[${feedbackType.toUpperCase()}]${subject ? `${subject}\n\n` : '\n\n'}${description}`,
+          });
 
 
           console.log("Feedback sent with event Id:", eventId);
@@ -105,6 +96,7 @@ const FeedbackModal : React.FC<FeedbackModalProps> = ({ visible , onClose }) => 
 
         } catch(error){
           console.error('Error submitting feedback:', error);
+          Sentry.captureException(error);
           Alert.alert('Error' , 'Failed to submit feedback. Please try again.');
         } 
         finally {
@@ -169,7 +161,107 @@ const FeedbackModal : React.FC<FeedbackModalProps> = ({ visible , onClose }) => 
 
               {/* name of feedback provider  */}
 
+              <View style={styles.section}>
+                <Text style={[styles.label , {color : colors.text}]}>Name (Optional)</Text>
+                  <LinearGradient colors={colors.gradients.surface} style={styles.inputWrapper}>
+                    <Ionicons name="person-outline" size={20} color={colors.textMuted}/>
+                    <TextInput 
+                      style={[styles.input , {color : colors.text}]}
+                       placeholder="Your Name"
+                       placeholderTextColor={colors.textMuted}
+                        value={name}
+                        onChangeText={setName}
+                        maxLength={50}
+                    />
+                  </LinearGradient>
+              </View>
 
+
+              {/* about the feedback from user  */}
+
+              <View style={styles.section}>
+                <Text style={[styles.label , {color : colors.text}]}>
+                   Subject {feedbackType === 'bug' ? '(Optional)' : '*'}
+                </Text>
+                <LinearGradient colors={colors.gradients.surface} style={styles.inputWrapper}>
+                   <Ionicons name="text-outline" size={20} color={colors.textMuted}/>
+                   <TextInput  
+                     style={[styles.input , {color : colors.text}]}
+                      placeholder={
+                        feedbackType === 'bug' ? 'Brief description of the bug' : 'What would you like to discuss?'
+                      }
+                       placeholderTextColor={colors.textMuted}
+                        value={subject}
+                         onChangeText={setSubject}
+                         maxLength={100}
+                         />
+                </LinearGradient>
+              </View>
+
+
+               {/* feedback description input part  */}
+
+               <View style={styles.section}>
+                <Text style={[styles.label , {color : colors.text}]}>Description *</Text>
+                <LinearGradient colors={colors.gradients.surface}
+                  style={[styles.inputWrapper , styles.textAreaWrapper]}>
+                  <TextInput  style={[styles.input , styles.textArea , {color : colors.text}]}
+                  
+                  placeholder={
+                     feedbackType === 'bug' ? 'Please explain the bug , what acutally happened...' : feedbackType === 'feature' ? 'Describe the feature you would like to see...' : 'Share your feedback for the app...'
+                   }
+
+                   placeholderTextColor={colors.textMuted}
+                   value={description}
+                   onChangeText={setDescription}
+                   multiline
+                   numberOfLines={6}
+                   maxLength={1000}
+                   textAlignVertical="top"
+                  />
+                </LinearGradient>
+                <Text style={[styles.charCount , {color : colors.textMuted}]}>{description.length}/1000</Text>
+               </View>
+
+
+               {/* information box  */}
+
+               <LinearGradient colors={['#3b82f620', '#3b82f610']}
+                   style={styles.infoBox}>
+                   <Ionicons name="information-circle" size={20} color="#3b82f6"/>
+                   <Text style={[styles.infoText , {color : colors.text}]}>
+                   Your feedback helps us to improve the app.
+                   </Text>
+               </LinearGradient>
+
+
+              {/* button for feedback submission  */}
+
+              <TouchableOpacity activeOpacity={0.8}
+                 onPress={handleSubmit}
+                  disabled={isSubmitting}
+                   style={styles.submitButtonWrapper}> 
+                <LinearGradient  colors={
+                    isSubmitting ? colors.gradients.muted : feedbackTypes.find((t) => t.id === feedbackType)?.color ? [
+                      feedbackTypes.find((t) => t.id === feedbackType)!.color,
+                      feedbackTypes.find((t) => t.id === feedbackType)!.color + 'CC',
+                    ] : colors.gradients.primary
+                }
+                 style={styles.submitButton}
+                >
+
+                   {isSubmitting ? (
+                     <ActivityIndicator color="#fff"/>
+                   ) : (
+                     <>
+                      <Ionicons name="send" size={20} color="#fff" />
+                      <Text style={styles.submitButtonText}>Submit Feedback</Text>
+                     
+                     </>
+                   )}
+
+                </LinearGradient>
+              </TouchableOpacity>
 
               </ScrollView>
 
