@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 32,
     paddingHorizontal: 20,
-    maxHeight: '90%',
+    height: '90%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.3,
@@ -315,6 +315,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    paddingBottom : 20,
   },
   section: {
     marginBottom: 20,
